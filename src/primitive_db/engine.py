@@ -1,13 +1,10 @@
 import shlex
 from .utils import load_metadata, save_metadata
-from .core import create_table, drop_table
+from .core import create_table, drop_table, list_tables
 
 DB_FILE = "db_meta.json"
 
-
 def print_help():
-    """Prints the help message for the current mode."""
-   
     print("\n***Процесс работы с таблицей***")
     print("Функции:")
     print("<command> create_table <имя_таблицы> <столбец1:тип> .. - создать таблицу")
@@ -18,15 +15,13 @@ def print_help():
     print("<command> exit - выход из программы")
     print("<command> help - справочная информация\n")
 
-
 def run():
-    print("Первая попытка запустить проект!")
     print_help()
     
     while True:
         metadata = load_metadata(DB_FILE)
         
-        user_input = input("\nВведите команду: ").strip()
+        user_input = input("Введите команду: ").strip()
         if not user_input:
             continue
             
@@ -39,9 +34,9 @@ def run():
         elif command == "help":
             print_help()
             
-        elif command == "create":
+        elif command == "create_table":
             if len(args) < 3:
-                print("Ошибка: используйте 'create <table_name> <col1:type> <col2:type>...'")
+                print(f"Некорректное значение: {user_input}. Попробуйте снова.")
                 continue
                 
             table_name = args[1]
@@ -50,7 +45,7 @@ def run():
             
             for arg in args[2:]:
                 if ":" not in arg:
-                    print(f"Ошибка формата: '{arg}'. Ожидается 'имя:тип' (например, age:int).")
+                    print(f"Некорректное значение: {arg}. Попробуйте снова.")
                     is_valid = False
                     break
                 name, col_type = arg.split(":", 1)
@@ -60,14 +55,17 @@ def run():
                 if create_table(metadata, table_name, columns):
                     save_metadata(DB_FILE, metadata)
                     
-        elif command == "drop":
+        elif command == "drop_table":
             if len(args) != 2:
-                print("Ошибка: используйте 'drop <table_name>'")
+                print(f"Некорректное значение: {user_input}. Попробуйте снова.")
                 continue
                 
             table_name = args[1]
             if drop_table(metadata, table_name):
                 save_metadata(DB_FILE, metadata)
                 
+        elif command == "list_tables":
+            list_tables(metadata)
+                
         else:
-            print(f"Неизвестная команда: '{command}'. Введите 'help' для справки.")
+            print(f"Функции {command} нет. Попробуйте снова.")

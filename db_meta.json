@@ -1,1 +1,14 @@
-{}
+{
+    "admins": {
+        "columns": [
+            {
+                "name": "ID",
+                "type": "int"
+            },
+            {
+                "name": "login",
+                "type": "str"
+            }
+        ]
+    }
+}
