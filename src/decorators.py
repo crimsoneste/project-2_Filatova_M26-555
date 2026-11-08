@@ -1,15 +1,20 @@
+"""Реализация декораторов для обработки ошибок, подтверждений и логирования"""
+
 import time
 from functools import wraps
 
 
 def handle_db_errors(func):
+    """Перехватыват и обработка ошибок базы данных"""
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
         except FileNotFoundError:
             print(
-                "Ошибка: Файл данных не найден. Возможно, база данных не инициализирована."
+                "Ошибка: Файл данных не найден. Возможно, " \
+                "база данных не инициализирована."
             )
         except KeyError as e:
             print(f"Ошибка: Таблица или столбец {e} не найден.")
@@ -22,6 +27,8 @@ def handle_db_errors(func):
 
 
 def confirm_action(action_name):
+    """Запрос у пользователя подтверждения перед выполнением небезопасной операции"""
+
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
@@ -39,6 +46,8 @@ def confirm_action(action_name):
 
 
 def log_time(func):
+    """Отсчет и вывод времени выполнения функции"""
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         start = time.monotonic()
@@ -51,6 +60,7 @@ def log_time(func):
 
 
 def create_cacher():
+    """Создание функции-замыкания для кэширования результатов запросов"""
     cache = {}
 
     def cache_result(key, value_func):

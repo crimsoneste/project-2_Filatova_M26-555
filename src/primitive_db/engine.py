@@ -1,8 +1,11 @@
+"""Основной цикл, обработка ввода пользователя и вызов команд"""
+
 import shlex
 
 from prettytable import PrettyTable
 
 from decorators import create_cacher
+from primitive_db.constants import META_FILE
 from primitive_db.core import (
     create_table,
     delete,
@@ -21,24 +24,27 @@ from primitive_db.utils import (
     save_table_data,
 )
 
-DB_FILE = "db_meta.json"
-
 
 def print_help():
+    """Выводит справочную информацию по доступным командам."""
     print("\n***Операции с данными***\n")
     print("Функции:")
     print(
-        "<command> insert into <имя_таблицы> values (<значение1>, <значение2>, ...) - создать запись"
+        "<command> insert into <имя_таблицы> values (<значение1>, <значение2>, ...)"
+        " - создать запись"
     )
     print(
-        "<command> select from <имя_таблицы> where <столбец> = <значение> - прочитать записи по условию"
+        "<command> select from <имя_таблицы> where <столбец> = <значение>"
+        " - прочитать записи по условию"
     )
     print("<command> select from <имя_таблицы> - прочитать все записи")
     print(
-        "<command> update <имя_таблицы> set <столбец1> = <новое_значение1> where <столбец_условия> = <значение> - обновить"
+        "<command> update <имя_таблицы> set <столбец1>" \
+        " = <новое_значение1> where <столбец_условия> = <значение> - обновить"
     )
     print(
-        "<command> delete from <имя_таблицы> where <столбец> = <значение> - удалить запись"
+        "<command> delete from <имя_таблицы> where <столбец> = <значение>"
+        " - удалить запись"
     )
     print("<command> info <имя_таблицы> - вывести информацию о таблице")
     print("<command> exit - выход из программы")
@@ -46,12 +52,13 @@ def print_help():
 
 
 def run():
+    """Запускает основной цикл программы."""
     print_help()
 
     select_cache = create_cacher()
 
     while True:
-        metadata = load_metadata(DB_FILE)
+        metadata = load_metadata(META_FILE)
         user_input = input("Введите команду: ").strip()
 
         if not user_input:
@@ -77,12 +84,12 @@ def run():
                         name, col_type = arg.split(":", 1)
                         columns.append((name, col_type))
                 if create_table(metadata, table_name, columns):
-                    save_metadata(DB_FILE, metadata)
+                    save_metadata(META_FILE, metadata)
 
             elif command == "drop_table":
                 if len(args) == 2:
                     if drop_table(metadata, args[1]):
-                        save_metadata(DB_FILE, metadata)
+                        save_metadata(META_FILE, metadata)
 
             elif command == "list_tables":
                 list_tables(metadata)
@@ -100,9 +107,7 @@ def run():
                     new_data = insert(metadata, table_name, values)
                     if new_data is not None:
                         save_table_data(table_name, new_data)
-                        select_cache = (
-                            create_cacher()
-                        )  # Сброс кэша после изменения данных
+                        select_cache = create_cacher()
 
             elif command == "select":
                 if len(args) > 2 and args[1] == "from":
@@ -113,7 +118,6 @@ def run():
                     if len(args) > 4 and args[3] == "where":
                         where_clause = parse_condition(args[4:])
 
-                    # Использование кэша
                     cache_key = f"{table_name}_{str(where_clause)}"
                     result = select_cache(
                         cache_key, lambda: select(table_data, where_clause)
@@ -150,7 +154,7 @@ def run():
                             table_name, table_data, set_clause, where_clause
                         )
                         save_table_data(table_name, new_data)
-                        select_cache = create_cacher()  # Сброс кэша
+                        select_cache = create_cacher()
 
             elif command == "delete":
                 if len(args) > 4 and args[1] == "from" and args[3] == "where":
@@ -161,7 +165,7 @@ def run():
                     new_data = delete(table_name, table_data, where_clause)
                     if new_data is not None:
                         save_table_data(table_name, new_data)
-                        select_cache = create_cacher()  # Сброс кэша
+                        select_cache = create_cacher()
 
             else:
                 print(f"Функции {command} нет. Попробуйте снова.")

@@ -1,17 +1,21 @@
-from decorators import confirm_action, handle_db_errors, log_time
+"""Основная бизнес-логика (создание/удаление таблиц, CRUD-операции)"""
 
-ALLOWED_TYPES = {"int", "str", "bool"}
+from decorators import confirm_action, handle_db_errors, log_time
+from primitive_db.constants import VALID_TYPES
+from primitive_db.utils import load_table_data
 
 
 @handle_db_errors
 def create_table(metadata, table_name, columns):
+    """Создает новую таблицу в метаданных"""
     if table_name in metadata:
         raise ValueError(f'Таблица "{table_name}" уже существует.')
 
     for col_name, col_type in columns:
-        if col_type not in ALLOWED_TYPES:
+        if col_type not in VALID_TYPES:
             raise ValueError(
-                f"Недопустимый тип {col_type} для столбца {col_name}. Разрешены: int, str, bool."
+                f"Недопустимый тип {col_type} для столбца {col_name}. "
+                f"Разрешены: {', '.join(VALID_TYPES)}."
             )
 
     final_columns = [{"name": "ID", "type": "int"}]
@@ -28,6 +32,7 @@ def create_table(metadata, table_name, columns):
 @handle_db_errors
 @confirm_action("удаление таблицы")
 def drop_table(metadata, table_name):
+    """Удаляет таблицу из метаданных"""
     if table_name not in metadata:
         raise KeyError(f'"{table_name}"')
     del metadata[table_name]
@@ -37,6 +42,7 @@ def drop_table(metadata, table_name):
 
 @handle_db_errors
 def list_tables(metadata):
+    """Выводит список всех существующих таблиц"""
     if not metadata:
         print("Таблиц нет.")
         return
@@ -46,9 +52,9 @@ def list_tables(metadata):
 
 @handle_db_errors
 def info_table(metadata, table_name):
+    """Выводит информацию о структуре таблицы"""
     if table_name not in metadata:
         raise KeyError(f'"{table_name}"')
-    from primitive_db.utils import load_table_data
 
     table_data = load_table_data(table_name)
     cols = [f"{c['name']}:{c['type']}" for c in metadata[table_name]["columns"]]
@@ -60,6 +66,7 @@ def info_table(metadata, table_name):
 @handle_db_errors
 @log_time
 def insert(metadata, table_name, values):
+    """Добавляет новую запись в таблицу"""
     if table_name not in metadata:
         raise KeyError(f'"{table_name}"')
 
@@ -79,8 +86,6 @@ def insert(metadata, table_name, values):
         else:
             new_record[col["name"]] = str(val_str)
 
-    from primitive_db.utils import load_table_data
-
     table_data = load_table_data(table_name)
     max_id = max([row["ID"] for row in table_data], default=0)
     new_record["ID"] = max_id + 1
@@ -92,6 +97,7 @@ def insert(metadata, table_name, values):
 @handle_db_errors
 @log_time
 def select(table_data, where_clause=None):
+    """Возвращает записи, соответствующие условию (или все)"""
     if not where_clause:
         return table_data
     result = []
@@ -108,6 +114,7 @@ def select(table_data, where_clause=None):
 
 @handle_db_errors
 def update(table_name, table_data, set_clause, where_clause):
+    """Обновляет записи в таблице по заданному условию"""
     updated_ids = []
     for row in table_data:
         match = True
@@ -131,6 +138,7 @@ def update(table_name, table_data, set_clause, where_clause):
 @handle_db_errors
 @confirm_action("удаление записей")
 def delete(table_name, table_data, where_clause):
+    """Удаляет записи из таблицы по заданному условию"""
     new_data = []
     deleted_ids = []
     for row in table_data:

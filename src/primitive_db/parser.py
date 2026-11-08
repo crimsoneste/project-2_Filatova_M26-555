@@ -1,4 +1,8 @@
+"""Функции для разбора сложных команд (where, set, values)"""
+
+
 def parse_value(value_str):
+    """Преобразует строковое значение в правильный тип данных (int, bool или str)"""
     if value_str.lower() == "true":
         return True
     if value_str.lower() == "false":
@@ -14,6 +18,7 @@ def parse_value(value_str):
 
 
 def parse_condition(args):
+    """Преобразует список аргументов вида ['age', '=', '28'] в словарь {'age': 28}"""
     if len(args) < 3:
         return None
     col = args[0]
