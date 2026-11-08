@@ -47,4 +47,4 @@
 
 А ниже представлен пример работы с аналогичными операциями и обработкой всех ошибок через декораторы
 
-[![asciicast](https://asciinema.org/a/owxvaFRyFkGVKsFz.png?t=1)](https://asciinema.org/a/owxvaFRyFkGVKsFz)
+[![asciicast](https://images.weserv.nl/?url=asciinema.org/a/owxvaFRyFkGVKsFz.png?t=1)](https://asciinema.org/a/owxvaFRyFkGVKsFz)
