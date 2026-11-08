@@ -43,8 +43,8 @@
 
 Ниже представлена запись работы с базой данных, демонстрирующая все CRUD-операции (создание таблицы, добавление, чтение, обновление и удаление данных).
 
-[![asciicast](https://asciinema.org/a/ulI6PObMhOAoAJg9.svg)](https://asciinema.org/a/ulI6PObMhOAoAJg9)
+[![asciicast](https://asciinema.org/a/ulI6PObMhOAoAJg9.png)](https://asciinema.org/a/ulI6PObMhOAoAJg9)
 
 А ниже представлен пример работы с аналогичными операциями и обработкой всех ошибок через декораторы
 
-[![asciicast](https://asciinema.org/a/owxvaFRyFkGVKsFz.svg)](https://asciinema.org/a/owxvaFRyFkGVKsFz)
+[![asciicast](https://asciinema.org/a/owxvaFRyFkGVKsFz.png)](https://asciinema.org/a/owxvaFRyFkGVKsFz)
