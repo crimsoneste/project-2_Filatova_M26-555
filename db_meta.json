@@ -1,13 +1,21 @@
 {
-    "admins": {
+    "users": {
         "columns": [
             {
                 "name": "ID",
                 "type": "int"
             },
             {
-                "name": "login",
+                "name": "name",
                 "type": "str"
+            },
+            {
+                "name": "age",
+                "type": "int"
+            },
+            {
+                "name": "is_active",
+                "type": "bool"
             }
         ]
     }
