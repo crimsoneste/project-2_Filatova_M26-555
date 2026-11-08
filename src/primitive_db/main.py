@@ -10,7 +10,7 @@ if __name__ == "__main__":
     main()
 
 
-'''create_table users name:str age:int is_active:bool
+"""create_table users name:str age:int is_active:bool
 
 insert into users values ("Sergei", 28, true)
 
@@ -24,4 +24,4 @@ update users set age = 29 where name = "Sergei"
 
 delete from users where name = "Anna"
 
-info users'''
+info users"""

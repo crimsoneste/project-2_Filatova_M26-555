@@ -1,8 +1,7 @@
 [
     {
-        "name": "Sergei",
-        "age": 29,
-        "is_active": true,
-        "ID": 1
+        "name": "Dave",
+        "age": 40,
+        "ID": 2
     }
 ]

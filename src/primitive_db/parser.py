@@ -1,10 +1,11 @@
 def parse_value(value_str):
-    if value_str.lower() == 'true':
+    if value_str.lower() == "true":
         return True
-    if value_str.lower() == 'false':
+    if value_str.lower() == "false":
         return False
-    if (value_str.startswith('"') and value_str.endswith('"')) or \
-       (value_str.startswith("'") and value_str.endswith("'")):
+    if (value_str.startswith('"') and value_str.endswith('"')) or (
+        value_str.startswith("'") and value_str.endswith("'")
+    ):
         return value_str[1:-1]
     try:
         return int(value_str)
